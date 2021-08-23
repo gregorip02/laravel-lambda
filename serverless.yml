@@ -1,0 +1,53 @@
+service: laravel
+useDotenv: true
+plugins:
+  # We need to include the Bref plugin
+  - ./vendor/bref/bref
+  - serverless-dotenv-plugin
+
+custom:
+  dotenv:
+    file: true
+    exclude:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+      - NODE_ENV
+    required:
+      - APP_KEY
+
+provider:
+    name: aws
+    region: us-east-1
+    stage: production # Could be stage, dev, etc.
+    runtime: provided.al2
+    lambdaHashingVersion: 20201221
+
+package:
+  # Directories to exclude from deployment
+  patterns:
+    - '!node_modules/**'
+    - '!public/storage'
+    - '!database/database.sqlite'
+    - '!resources/css/**'
+    - '!resources/js/**'
+    - '!storage/**'
+    - '!tests/**'
+
+functions:
+  # This function runs the Laravel website/API
+  api:
+      handler: public/index.php
+      timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+      layers:
+        - ${bref:layer.php-80-fpm}
+      events:
+        - httpApi: '*'
+
+    # This function lets us run artisan commands in Lambda
+  artisan:
+    handler: artisan
+    timeout: 120 # in seconds
+    layers:
+        - ${bref:layer.php-80} # PHP
+        - ${bref:layer.console} # The "console" layer
