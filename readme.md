@@ -55,6 +55,8 @@ You can find more documentation on the official brefphp page.
 - https://bref.sh/
 - https://bref.sh/docs/frameworks/laravel.html
 
+> Run `npx serverless remove` to destroy the stack.
+
 # TODO
 
 - [ ] Add support for SQS.
