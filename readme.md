@@ -14,7 +14,7 @@ This application contains an example of how to deploy Laravel 8.x as a lambda fu
 
 ### Get started
 
-#### Clone the repository and configure it.
+1. Clone the repository and configure it.
 
 ```sh
 # Clone this project
@@ -27,21 +27,36 @@ cp .env.example .env
 
 # Generate an application key and copy it to your environment variables file.
 echo "base64:$(openssl rand -base64 32)"
+
+# Paste the output in .env file
+# APP_KEY=base64:e4IiYMsTe+n+NZMjgPZyCL4kKWJ2y0itnYGqk2ZBJ7c=
 ```
 
-```dotenv
-# .env
-APP_KEY=base64:e4IiYMsTe+n+NZMjgPZyCL4kKWJ2y0itnYGqk2ZBJ7c=
-```
-
-#### Configure your serverless credentials using:
+2. Configure your serverless credentials using:
 
 ```sh
 npx serverless config credentials --provider aws --key YOUR-AWS-KEY --secret YOUR-AWS-SECRET -o
 ```
 
-#### Deploy.
+3. Deploy.
+
+By default the deployment of the app is in production mode, before executing the 
+deployment it is optimized to add caching to the aws lambda execution environment 
+by adding cache to the configuration and paths of your application.
+
+See `app/Console/Commands/ServerlessOptimizeCommand.php`.
 
 ```sh
 make deploy
 ```
+
+You can find more documentation on the official brefphp page.
+
+- https://bref.sh/
+- https://bref.sh/docs/frameworks/laravel.html
+
+# TODO
+
+- [ ] Add support for SQS.
+- [ ] Add support for Elastic Cache.
+- [ ] Add support for Schedule Commands.
